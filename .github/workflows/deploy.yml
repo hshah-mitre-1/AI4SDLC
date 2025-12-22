@@ -34,7 +34,7 @@ jobs:
   notify_final_reviewer:
     runs-on: ubuntu-latest
     # Trigger when someone leaves a "comment" review (not approve / request changes)
-    if: github.event_name == 'pull_request_review' && github.event.review.state == 'commented'
+    if: github.event.review.state == 'commented'
     steps:
       - name: Create review with message to team
         env:
