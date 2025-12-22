@@ -6,7 +6,7 @@ author: That Would Be Me
 
 testing one
 
-## Getting started test5
+## Getting started test6
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
 
