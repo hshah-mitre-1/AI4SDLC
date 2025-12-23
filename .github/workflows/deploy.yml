@@ -54,7 +54,8 @@ jobs:
           PR_NUMBER=${{ github.event.pull_request.number }}
           REVIEWER=${{ github.event.review.user.login }}
           TEAM_HANDLE="@${{ github.repository_owner }}/test-team"
-          COMMENT="$TEAM_HANDLE PR #$PR_NUMBER has a new review comment from @$REVIEWER and is ready for final review."
+          HEADER="this is header"
+          COMMENT="$HEADER\n\n$TEAM_HANDLE PR #$PR_NUMBER has a new review comment from @$REVIEWER and is ready for final review."
   
           curl -X POST \
             -H "Authorization: token $GITHUB_TOKEN" \
@@ -68,7 +69,6 @@ jobs:
             -H "Authorization: token $ORG_PAT" \
             -H "Accept: application/vnd.github+json" \
             -H "Content-Type: application/json" \
-            -H "Subject: Final Review Notification for PR #$PR_NUMBER" \
             -d "{\"team_reviewers\":[\"test-team\"]}" \
             https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/requested_reviewers -v
 
