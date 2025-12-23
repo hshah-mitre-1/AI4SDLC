@@ -41,10 +41,11 @@ jobs:
       - name: Notify final reviewer team
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORG_PAT: ${{ secrets.ORG_PAT }}             # PAT with repo + read:org for team review request
+
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
           REVIEWER=${{ github.event.review.user.login }}
-
           TEAM_HANDLE="@${{ github.repository_owner }}/test-team"
           COMMENT="$TEAM_HANDLE PR #$PR_NUMBER has a new review comment from @$REVIEWER and is ready for final review."
   
@@ -52,9 +53,16 @@ jobs:
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             -H "Content-Type: application/json" \
-            -d "{\"body\":\"$COMMENT\",\"event\":\"COMMENT\"}" \
-            https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews
+            -d "{\"body\": \"$COMMENT\"}" \
+            https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments
 
+          # 2) Request review from the approval team (no body supported here)
+          curl -X POST \
+            -H "Authorization: token $ORG_PAT" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Content-Type: application/json" \
+            -d '{"team_reviewers":["ai4sdlc-approval"]}' \
+            https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/requested_reviewers
 
   deploy_to_github_pages:
     needs: build
