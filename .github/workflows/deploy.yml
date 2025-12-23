@@ -61,7 +61,7 @@ jobs:
             -H "Authorization: token $ORG_PAT" \
             -H "Accept: application/vnd.github+json" \
             -H "Content-Type: application/json" \
-            -d '{"team_reviewers":["ai4sdlc-approval"]}' \
+            -d '{"team_reviewers":["test-team"]}' \
             https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/requested_reviewers
 
   deploy_to_github_pages:
