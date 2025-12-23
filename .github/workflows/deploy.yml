@@ -36,7 +36,7 @@ jobs:
 
   notify_final_reviewer:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request_review' && github.event.review.state == 'approved'
+    if: github.event.review.state == 'commented'
     steps:
       - name: Notify final reviewer team
         env:
@@ -44,8 +44,9 @@ jobs:
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
           REVIEWER=${{ github.event.review.user.login }}
-          TEAM_HANDLE="@${{ github.repository_owner }}/ai4sdlc-approval"
-          COMMENT="$TEAM_HANDLE PR #$PR_NUMBER has been approved by @$REVIEWER and is ready for final review."
+
+          TEAM_HANDLE="@${{ github.repository_owner }}/test-team"
+          COMMENT="$TEAM_HANDLE PR #$PR_NUMBER has a new review comment from @$REVIEWER and is ready for final review."
   
           curl -X POST \
             -H "Authorization: token $GITHUB_TOKEN" \
