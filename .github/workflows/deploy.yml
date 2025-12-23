@@ -36,22 +36,24 @@ jobs:
 
   notify_final_reviewer:
     runs-on: ubuntu-latest
-    if: github.event.review.state == 'commented'
+    if: github.event_name == 'pull_request_review' && github.event.review.state == 'approved'
     steps:
-      - name: Create review with message to team
+      - name: Notify final reviewer team
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
           REVIEWER=${{ github.event.review.user.login }}
-          TEAM_HANDLE="@${{ github.repository_owner }}/test-team"
-          COMMENT="$TEAM_HANDLE PR #$PR_NUMBER has a new review comment from @$REVIEWER and is ready for final review."
+          TEAM_HANDLE="@${{ github.repository_owner }}/ai4sdlc-approval"
+          COMMENT="$TEAM_HANDLE PR #$PR_NUMBER has been approved by @$REVIEWER and is ready for final review."
+  
           curl -X POST \
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             -H "Content-Type: application/json" \
             -d "{\"body\":\"$COMMENT\",\"event\":\"COMMENT\"}" \
             https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews
+
 
   deploy_to_github_pages:
     needs: build
