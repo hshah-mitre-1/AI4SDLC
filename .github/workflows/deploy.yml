@@ -36,22 +36,16 @@ jobs:
 
   notify_final_reviewer:
     runs-on: ubuntu-latest
-    # Trigger when someone leaves a "comment" review (not approve / request changes)
     if: github.event.review.state == 'commented'
     steps:
       - name: Create review with message to team
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           PR_NUMBER=${{ github.event.pull_request.number }}
           REVIEWER=${{ github.event.review.user.login }}
-
-          # Your team handle from https://github.com/orgs/hshah-mitre-1/teams/test-team
-          # If this repo belongs to that org, github.repository_owner will be "hshah-mitre-1"
           TEAM_HANDLE="@${{ github.repository_owner }}/test-team"
-
           COMMENT="$TEAM_HANDLE PR #$PR_NUMBER has a new review comment from @$REVIEWER and is ready for final review."
-
           curl -X POST \
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github+json" \
