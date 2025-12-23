@@ -32,12 +32,19 @@ jobs:
         with:
           name: site
           path: site
+
           
 
   notify_final_reviewer:
     runs-on: ubuntu-latest
     if: github.event.review.state == 'commented'
     steps:
+
+      - name: Debug ORG_PAT
+        run: echo "ORG_PAT=${ORG_PAT}"
+        env:
+          ORG_PAT: ${{ secrets.ORG_PAT }}
+    
       - name: Notify final reviewer team
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
